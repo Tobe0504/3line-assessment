@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DownloadIcon from "../assets/icons/DownloadIcon";
 import Button from "../components/Button";
+import Loader from "../components/Loader";
 import Table from "../components/Table";
+import { requestHandler } from "../helperFunctions/requestHandler";
 import { roleData } from "../utilities/dummyData";
-import { roleTypes } from "../utilities/types";
+import { requestType, roleTypes } from "../utilities/types";
 
 const tableHeaders = [
   "Name",
@@ -16,7 +18,28 @@ const tableHeaders = [
 
 const SettingsRolesUserRoles = () => {
   // States
-  const [tableData, setTableData] = useState<roleTypes[]>(roleData);
+  const [tableData, setTableData] = useState<roleTypes[]>([]);
+  const [data, setData] = useState<requestType>({
+    isLoading: false,
+    data: null,
+    error: null,
+  });
+
+  // Effects
+  useEffect(() => {
+    requestHandler({
+      method: "GET",
+      url: "/api/roles",
+      state: data,
+      setState: setData,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (data?.data) {
+      setTableData(data?.data);
+    }
+  }, [data?.data]);
 
   return (
     <section className="py-5 ">
@@ -30,11 +53,15 @@ const SettingsRolesUserRoles = () => {
         </Button>
       </div>
 
-      <Table
-        tableHeaders={tableHeaders}
-        data={tableData}
-        setData={setTableData}
-      />
+      {data?.isLoading ? (
+        <Loader />
+      ) : (
+        <Table
+          tableHeaders={tableHeaders}
+          data={tableData}
+          setData={setTableData}
+        />
+      )}
     </section>
   );
 };
