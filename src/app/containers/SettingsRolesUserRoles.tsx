@@ -42,7 +42,7 @@ const SettingsRolesUserRoles = () => {
   }, [data?.data]);
 
   return (
-    <section className="py-5 ">
+    <section className="py-5">
       <div className="flex lg:flex-row flex-col gap-4 lg:items-center justify-between ">
         <h6 className="font-medium text-blue-100 font-body text-lg">
           User Roles
